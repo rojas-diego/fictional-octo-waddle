@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -74,7 +73,7 @@ func main() {
 	http.HandleFunc("/fibonacci", func(w http.ResponseWriter, r *http.Request) {
 		value, err := strconv.Atoi(r.URL.Query().Get("value"))
 		if err != nil {
-			value = 25000
+			value = 50000000
 		}
 		for j := 0; j < value; j++ {
 			a := 0
@@ -86,7 +85,6 @@ func main() {
 				if b >= value {
 					break
 				}
-				fmt.Println("value: ", a)
 				a = c
 			}
 		}
@@ -94,6 +92,16 @@ func main() {
 	})
 
 	http.HandleFunc("/runtime_info", func(w http.ResponseWriter, r *http.Request) {
+
+		infostat, err := cpu.Info()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		for i := range infostat {
+			println(infostat[i].Mhz)
+		}
+
 		// now := time.Now()
 		cpuinfo, err := cpu.Percent(time.Second, false)
 		if err != nil {
