@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/go-http-utils/logger"
 	"github.com/shirou/gopsutil/cpu"
 )
 
@@ -27,7 +29,9 @@ var (
 )
 
 func main() {
-	http.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		value, err := strconv.Atoi(r.URL.Query().Get("value"))
 		if err != nil {
 			w.WriteHeader(commonHttpResponseCode[rand.Intn(len(commonHttpResponseCode))])
@@ -36,7 +40,7 @@ func main() {
 		w.WriteHeader(value)
 	})
 
-	http.HandleFunc("/allocate", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/allocate", func(w http.ResponseWriter, r *http.Request) {
 		mb, err := strconv.Atoi(r.URL.Query().Get("mb"))
 		if err != nil {
 			mb = 32
@@ -62,7 +66,7 @@ func main() {
 		}(mb, duration)
 	})
 
-	http.HandleFunc("/delay", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/delay", func(w http.ResponseWriter, r *http.Request) {
 		wait, err := time.ParseDuration(r.URL.Query().Get("value"))
 		if err != nil {
 			wait = time.Millisecond * time.Duration(rand.Intn(500))
@@ -70,7 +74,7 @@ func main() {
 		time.Sleep(wait)
 	})
 
-	http.HandleFunc("/fibonacci", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/fibonacci", func(w http.ResponseWriter, r *http.Request) {
 		value, err := strconv.Atoi(r.URL.Query().Get("value"))
 		if err != nil {
 			value = 50000000
@@ -91,7 +95,7 @@ func main() {
 		w.WriteHeader(200)
 	})
 
-	http.HandleFunc("/runtime_info", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/runtime_info", func(w http.ResponseWriter, r *http.Request) {
 
 		infostat, err := cpu.Info()
 		if err != nil {
@@ -157,5 +161,9 @@ func main() {
 		// "}`, totalPercent, cpuinfo.Total, deltaNs, cpuDeltaNs)))
 	})
 
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":3000", logger.Handler(mux, os.Stdout, logger.CombineLoggerType))
 }
+
+// func logRequest(r *http.Request) {
+// 	log.Printf("path=%s peer=%s method=%s", r.RequestURI, r.RemoteAddr, r.Method)
+// }

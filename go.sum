@@ -1,3 +1,5 @@
+github.com/go-http-utils/logger v0.0.0-20161128092850-f3a42dcdeae6 h1:R/ypabUA7vskKTRSlgP6rMUHTU6PBRgIcHVSU9qQ6qM=
+github.com/go-http-utils/logger v0.0.0-20161128092850-f3a42dcdeae6/go.mod h1:CpBLxS3WrxouNECP/Y1A3i6qDnUYs8BvcXjgOW4Vqcw=
 github.com/go-ole/go-ole v1.2.6 h1:/Fpf6oFPoeFik9ty7siob0G6Ke8QvQEuVcuChpwXzpY=
 github.com/go-ole/go-ole v1.2.6/go.mod h1:pprOEPIfldk/42T2oK7lQ4v4JSDwmV0As9GaiUsvbm0=
 github.com/mackerelio/go-osstat v0.2.2 h1:7jVyXGXTkQL3+6lDVUDBY+Fpo8VQPfyOkZeXxxsXX4c=
